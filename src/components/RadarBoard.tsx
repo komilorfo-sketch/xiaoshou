@@ -33,7 +33,7 @@ export function RadarBoard({ completedSteps, stepStatuses = {} }: RadarBoardProp
             <ClipboardCheck className="w-6 h-6 text-primary" />
           </div>
           <CardTitle className="text-lg font-black tracking-tight text-slate-900">
-            售前备战检查清单
+            销售备战检查清单
           </CardTitle>
         </div>
       </CardHeader>
@@ -80,7 +80,7 @@ export function RadarBoard({ completedSteps, stepStatuses = {} }: RadarBoardProp
                       ) : isActive ? (
                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                       ) : (
-                        <Circle className="w-3 h-3 text-slate-300" />
+                        <Circle className="w-3 h-3 text-slate-900" />
                       )}
                     </div>
                   </div>
@@ -99,7 +99,7 @@ export function RadarBoard({ completedSteps, stepStatuses = {} }: RadarBoardProp
                     <div className="flex justify-between items-center px-1">
                       <h3 className={cn(
                         "font-bold tracking-tight",
-                        isCompleted ? "text-slate-900 text-lg" : isActive ? "text-primary text-lg" : "text-slate-400 text-base"
+                        isCompleted ? "text-slate-900 text-lg" : isActive ? "text-primary text-lg" : "text-slate-900 text-base"
                       )}>
                         {step.id}. {step.title}
                       </h3>
@@ -110,7 +110,7 @@ export function RadarBoard({ completedSteps, stepStatuses = {} }: RadarBoardProp
                     
                     <p className={cn(
                       "text-sm font-semibold leading-relaxed px-1",
-                      isCompleted || isActive ? "text-slate-600" : "text-slate-400"
+                      isCompleted || isActive ? "text-slate-900" : "text-slate-900"
                     )}>
                       {step.desc}
                     </p>

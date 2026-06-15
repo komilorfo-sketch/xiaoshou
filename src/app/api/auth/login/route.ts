@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
 import prisma from '@/lib/db';
 
 export async function POST(req: Request) {
@@ -28,9 +27,7 @@ export async function POST(req: Request) {
 
     const user = results[0];
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
+    if (password !== user.password) {
       return NextResponse.json(
         { message: '密码错误' },
         { status: 401 }

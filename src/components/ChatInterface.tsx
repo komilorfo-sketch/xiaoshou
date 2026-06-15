@@ -189,7 +189,7 @@ export function ChatInterface({ onStepConfirmed, onStatusUpdate, onComplete, onS
             <Button 
               variant="outline" 
               size="sm" 
-              className="h-9 border-slate-200 text-slate-500 hover:text-blue-600 hover:bg-blue-50 font-bold text-sm gap-2 px-4 transition-all"
+              className="h-9 border-slate-200 text-slate-900 hover:text-blue-600 hover:bg-blue-50 font-bold text-sm gap-2 px-4 transition-all"
               onClick={() => onSave(messages)}
             >
               <HistoryIcon className="w-4 h-4" />
@@ -234,7 +234,7 @@ export function ChatInterface({ onStepConfirmed, onStatusUpdate, onComplete, onS
                   <Loader2 className="w-5 h-5 text-white animate-spin" />
                 </div>
                 <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
-                  <span className="text-base text-slate-400 italic">正在制定战术策略...</span>
+                  <span className="text-base text-slate-900">正在制定战术策略...</span>
                 </div>
               </div>
             )}
@@ -270,7 +270,7 @@ export function ChatInterface({ onStepConfirmed, onStatusUpdate, onComplete, onS
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               placeholder="请输入客户信息或售前思路（Enter 发送，Shift + Enter 换行）..."
-              className="w-full min-h-[60px] max-h-48 resize-none bg-slate-50 border-slate-200 focus-visible:ring-blue-600 focus-visible:border-transparent rounded-xl px-6 py-4 text-lg transition-all"
+              className="w-full min-h-[60px] max-h-48 resize-none bg-slate-50 border-slate-200 focus-visible:ring-blue-600 focus-visible:border-transparent rounded-xl px-6 py-4 text-lg transition-all placeholder:text-slate-400"
               rows={3}
             />
           </div>
@@ -287,7 +287,7 @@ export function ChatInterface({ onStepConfirmed, onStatusUpdate, onComplete, onS
               type="button"
               variant="outline"
               size="icon"
-              className="h-10 w-10 rounded-xl border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm"
+              className="h-10 w-10 rounded-xl border-slate-200 text-slate-900 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm"
               onClick={() => fileInputRef.current?.click()}
             >
               <Paperclip className="w-5 h-5" />
@@ -357,7 +357,7 @@ function ChatMessage({ role, content, isLoading }: { role: string, content: stri
             
             {showThoughts && (
               <div className="px-4 pb-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                <div className="prose prose-xs prose-indigo border-t border-indigo-100 pt-3 text-indigo-900/70 italic text-sm leading-relaxed">
+                <div className="prose prose-xs prose-indigo border-t border-indigo-100 pt-3 text-indigo-900/70 text-sm leading-relaxed">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {thoughts}
                   </ReactMarkdown>

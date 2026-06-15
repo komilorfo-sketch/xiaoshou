@@ -7,7 +7,7 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "首战即决战：AI 售前备战教练",
+  title: "首战即决战：AI 销售备战教练",
   description: "顶尖售前战术专家系统",
 };
 

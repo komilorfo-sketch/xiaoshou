@@ -1,9 +1,7 @@
 import prisma from './src/lib/db';
-import bcrypt from 'bcryptjs';
 
 async function main() {
   // 1. Create admin user
-  const adminHashedPassword = await bcrypt.hash('666888', 10);
   await prisma.user.upsert({
     where: { email: 'admin@system' },
     update: {},
@@ -11,13 +9,12 @@ async function main() {
       email: 'admin@system',
       employeeId: 'admin',
       name: '系统管理员',
-      password: adminHashedPassword,
+      password: '666888',
       isAdmin: true,
     },
   });
 
   // 2. Create a lead user if not exists
-  const hashedPassword = await bcrypt.hash('123456', 10);
   const user = await prisma.user.upsert({
     where: { email: 'guzheng@company.com' },
     update: {},
@@ -25,7 +22,7 @@ async function main() {
       email: 'guzheng@company.com',
       employeeId: 'GZ001',
       name: '顾铮',
-      password: hashedPassword,
+      password: '123456',
     },
   });
 

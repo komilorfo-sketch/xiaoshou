@@ -68,10 +68,10 @@ export default function RegisterPage() {
           <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center shadow-xl mb-4 group hover:scale-105 transition-transform duration-300">
             <Target className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-slate-900 italic uppercase">
+          <h1 className="text-2xl font-black tracking-tight text-slate-900 uppercase">
             权限申请中心
           </h1>
-          <p className="text-slate-400 text-sm font-bold tracking-widest mt-1 uppercase">
+          <p className="text-slate-900 text-sm font-bold tracking-widest mt-1 uppercase">
             加入售前专家中枢 · 开启战术推演
           </p>
         </div>
@@ -83,7 +83,7 @@ export default function RegisterPage() {
               <UserPlus className="w-5 h-5 text-blue-600" />
               注册备战账户
             </CardTitle>
-            <CardDescription className="text-slate-400 font-medium text-xs">
+            <CardDescription className="text-slate-900 font-medium text-xs">
               填入真实员工信息，审核通过后即可获得备战权限
             </CardDescription>
           </CardHeader>
@@ -92,7 +92,7 @@ export default function RegisterPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <div className="relative">
-                    <UserIcon className="absolute left-3 top-3.5 h-4 w-4 text-slate-400" />
+                    <UserIcon className="absolute left-3 top-3.5 h-4 w-4 text-slate-900" />
                     <Input
                       name="name"
                       placeholder="姓名"
@@ -104,7 +104,7 @@ export default function RegisterPage() {
                 <div className="grid gap-2">
                   <Input
                     name="employeeId"
-                    placeholder="工号"
+                    placeholder="用户名"
                     className="h-11 bg-slate-50 border-slate-200 focus:bg-white transiton-colors"
                     required
                   />
@@ -112,10 +112,10 @@ export default function RegisterPage() {
               </div>
               <div className="grid gap-2">
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3.5 h-4 w-4 text-slate-400" />
+                  <Mail className="absolute left-3 top-3.5 h-4 w-4 text-slate-900" />
                   <Input
                     name="email"
-                    placeholder="工作邮箱"
+                    placeholder="邮箱"
                     type="email"
                     className="pl-10 h-11 bg-slate-50 border-slate-200 focus:bg-white transiton-colors"
                     required
@@ -124,7 +124,7 @@ export default function RegisterPage() {
               </div>
               <div className="grid gap-2">
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3.5 h-4 w-4 text-slate-400" />
+                  <Lock className="absolute left-3 top-3.5 h-4 w-4 text-slate-900" />
                   <Input
                     name="password"
                     placeholder="设置访问密码"
@@ -151,7 +151,7 @@ export default function RegisterPage() {
               <div className="text-center">
                 <Link
                   href="/login"
-                  className="text-xs text-slate-400 font-bold hover:text-slate-600 transition-colors uppercase tracking-wider underline underline-offset-4"
+                  className="text-xs text-slate-900 font-bold hover:text-slate-900 transition-colors uppercase tracking-wider underline underline-offset-4"
                 >
                   已有权限？前往登录接入
                 </Link>
@@ -160,10 +160,6 @@ export default function RegisterPage() {
           </form>
         </Card>
 
-        {/* Footer Credit */}
-        <p className="mt-8 text-center text-[10px] text-slate-300 font-bold uppercase tracking-[0.2em]">
-          Industrial Pre-sales Intelligence · Elite Tactical Prep
-        </p>
       </div>
     </div>
   )

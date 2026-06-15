@@ -15,6 +15,19 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
+function cleanReport(text: string | undefined | null): string {
+  if (!text) return "";
+  return text
+    .replace(/\[THOUGHTS:\s*[\s\S]*?\]/g, '')
+    .replace(/\[THOUGHTS\]/g, '')
+    .replace(/\[ITEM_CONFIRMED:\s*\d+\]/g, '')
+    .replace(/\[ITEM_QUALITY:[^\]]*\]/g, '')
+    .replace(/\[ITEM_PROGRESS:[^\]]*\]/g, '')
+    .replace(/\[SESSION_TITLE:[^\]]*\]/g, '')
+    .replace(/\[SESSION_COMPLETE\]/g, '')
+    .trim();
+}
+
 export default function ReviewPageWrapper() {
   return (
     <Suspense fallback={
@@ -22,7 +35,7 @@ export default function ReviewPageWrapper() {
         <div className="flex flex-col items-center gap-6">
           <div className="w-14 h-14 border-4 border-slate-100 border-t-primary rounded-full animate-spin shadow-sm" />
           <div className="flex flex-col items-center text-center">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">复盘系统载入中...</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-900">复盘系统载入中...</span>
           </div>
         </div>
       </div>
@@ -202,7 +215,7 @@ function ReviewPageContent() {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="h-10 border-slate-200 text-slate-500 hover:text-red-600 hover:bg-red-50 font-bold text-sm gap-2 px-6 transition-all rounded-xl"
+                        className="h-10 border-slate-200 text-slate-900 hover:text-red-600 hover:bg-red-50 font-bold text-sm gap-2 px-6 transition-all rounded-xl"
                         onClick={handleDraftSave}
                       >
                         <HistoryIcon className="w-4 h-4" />
@@ -215,19 +228,19 @@ function ReviewPageContent() {
                 {isFinished && (
                   <div className="flex items-center gap-5 bg-slate-50 p-4 px-8 rounded-2xl border border-slate-100 shadow-sm">
                     <div className="flex flex-col items-center border-r border-slate-200 pr-5">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">综合报告评分</span>
-                      <span className="text-3xl font-bold italic tracking-tighter text-primary">{overallScore}<span className="text-xs not-italic opacity-30 ml-1">分</span></span>
+                      <span className="text-[10px] font-bold text-slate-900 uppercase tracking-widest mb-1 leading-none">综合报告评分</span>
+                      <span className="text-3xl font-bold tracking-tighter text-primary">{overallScore}<span className="text-xs  opacity-30 ml-1">分</span></span>
                     </div>
                     <Trophy className="w-8 h-8 text-primary opacity-20" />
                   </div>
                 )}
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="bg-slate-100 p-1 h-12 gap-1 rounded-xl w-fit">
-                  <TabsTrigger value="plan" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-500 data-[state=active]:text-primary">
+                  <TabsTrigger value="plan" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-900 data-[state=active]:text-primary">
                     <FileText className="w-4 h-4 mr-2" />
-                    售前备战核验
+                    销售备战核验
                   </TabsTrigger>
-                  <TabsTrigger value="review" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-500 data-[state=active]:text-primary">
+                  <TabsTrigger value="review" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-900 data-[state=active]:text-primary">
                     <MessageSquare className="w-4 h-4 mr-2" />
                     事后总结复盘 {isFinished ? '(已验证)' : '(进行中)'}
                   </TabsTrigger>
@@ -243,14 +256,14 @@ function ReviewPageContent() {
                       <section>
                         <h2 className="text-xl py-2 border-l-4 border-primary pl-4 font-bold">交付物 A：《全景备战报告》</h2>
                         <div className="mt-6 opacity-80">
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{session?.fullReport || "暂无备战报告"}</ReactMarkdown>
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{cleanReport(session?.fullReport) || "暂无备战报告"}</ReactMarkdown>
                         </div>
                       </section>
                       <Separator />
                       <section className="mt-12">
                         <h2 className="text-xl py-2 border-l-4 border-primary pl-4 font-bold">交付物 B：《现场话术建议》</h2>
                         <div className="mt-6 opacity-80">
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{session?.actionGuide || "暂无话术建议"}</ReactMarkdown>
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{cleanReport(session?.actionGuide) || "暂无话术建议"}</ReactMarkdown>
                         </div>
                       </section>
                     </div>

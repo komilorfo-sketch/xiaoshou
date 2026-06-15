@@ -90,7 +90,7 @@ export function ReviewRadarBoard({ completedSteps, activeStep, prepData = {}, ha
                       ) : (isActive && hasStarted) ? (
                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                       ) : (
-                        <Circle className={cn("w-3 h-3 text-slate-300")} />
+                        <Circle className={cn("w-3 h-3 text-slate-900")} />
                       )}
                     </div>
                   </div>
@@ -107,7 +107,7 @@ export function ReviewRadarBoard({ completedSteps, activeStep, prepData = {}, ha
                     <div className="flex justify-between items-center px-1">
                       <h3 className={cn(
                         "font-bold tracking-tight",
-                        isCompleted ? "text-slate-900 text-lg" : isActive ? "text-primary text-lg" : "text-slate-400 text-base"
+                        isCompleted ? "text-slate-900 text-lg" : isActive ? "text-primary text-lg" : "text-slate-900 text-base"
                       )}>
                         {step.id}. {step.title}
                       </h3>
@@ -116,7 +116,7 @@ export function ReviewRadarBoard({ completedSteps, activeStep, prepData = {}, ha
                     
                     <p className={cn(
                       "text-sm font-semibold leading-relaxed px-1",
-                      isCompleted || isActive ? "text-slate-600" : "text-slate-400"
+                      isCompleted || isActive ? "text-slate-900" : "text-slate-900"
                     )}>
                       {step.desc}
                     </p>

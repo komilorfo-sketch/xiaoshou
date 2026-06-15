@@ -173,7 +173,7 @@ export function ReviewChatInterface({ sessionId, initialMessages = [], onStepCon
 
                   {m.role === 'user' && (
                     <div className="mt-1 w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex-shrink-0 flex items-center justify-center">
-                      <User className="w-6 h-6 text-slate-400" />
+                      <User className="w-6 h-6 text-slate-900" />
                     </div>
                   )}
                 </div>
@@ -221,7 +221,7 @@ export function ReviewChatInterface({ sessionId, initialMessages = [], onStepCon
               type="button"
               variant="outline"
               size="icon"
-              className="h-10 w-10 rounded-xl border-slate-200 text-slate-400 hover:text-red-600 hover:border-red-200 transition-all shadow-sm"
+              className="h-10 w-10 rounded-xl border-slate-200 text-slate-900 hover:text-red-600 hover:border-red-200 transition-all shadow-sm"
               onClick={() => fileInputRef.current?.click()}
             >
               <Paperclip className="w-5 h-5" />

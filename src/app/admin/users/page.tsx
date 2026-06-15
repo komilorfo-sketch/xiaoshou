@@ -8,8 +8,10 @@ import { toast } from 'sonner';
 
 interface UserRow {
   id: string;
+  name: string;
   email: string;
   employeeId: string;
+  password: string;
   isAdmin: boolean;
   createdAt: string;
 }
@@ -19,7 +21,7 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState<UserRow[]>([]);
   const [userName, setUserName] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ employeeId: '', email: '', password: '' });
+  const [editForm, setEditForm] = useState({ name: '', employeeId: '', email: '', password: '' });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -51,17 +53,18 @@ export default function AdminUsersPage() {
 
   const startEdit = (user: UserRow) => {
     setEditingId(user.id);
-    setEditForm({ email: user.email, employeeId: user.employeeId, password: '' });
+    setEditForm({ name: user.name, email: user.email, employeeId: user.employeeId, password: '' });
   };
 
   const cancelEdit = () => {
     setEditingId(null);
-    setEditForm({ email: '', employeeId: '', password: '' });
+    setEditForm({ name: '', email: '', employeeId: '', password: '' });
   };
 
   const saveEdit = async (id: string) => {
     try {
       const body: any = { id };
+      if (editForm.name) body.name = editForm.name;
       if (editForm.email) body.email = editForm.email;
       if (editForm.employeeId) body.employeeId = editForm.employeeId;
       if (editForm.password) body.password = editForm.password;
@@ -95,7 +98,7 @@ export default function AdminUsersPage() {
   if (isLoading) {
     return (
       <main className="flex h-screen w-full items-center justify-center bg-slate-50">
-        <span className="text-slate-400 font-medium">加载中...</span>
+        <span className="text-slate-900 text-xl font-medium">加载中...</span>
       </main>
     );
   }
@@ -112,7 +115,7 @@ export default function AdminUsersPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-slate-900">用户管理</h1>
-              <p className="text-sm text-slate-400">管理系统中的所有注册用户</p>
+              <p className="text-lg text-slate-900">管理系统中的所有注册用户</p>
             </div>
           </div>
 
@@ -120,11 +123,12 @@ export default function AdminUsersPage() {
             <table className="w-full">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-100">
-                  <th className="text-left px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">用户名</th>
-                  <th className="text-left px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">邮箱</th>
-                  <th className="text-left px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">密码</th>
-                  <th className="text-left px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">注册时间</th>
-                  <th className="text-right px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">操作</th>
+                  <th className="text-left px-6 py-4 text-base font-bold text-slate-900 uppercase tracking-widest">用户名</th>
+                  <th className="text-left px-6 py-4 text-base font-bold text-slate-900 uppercase tracking-widest">姓名</th>
+                  <th className="text-left px-6 py-4 text-base font-bold text-slate-900 uppercase tracking-widest">邮箱</th>
+                  <th className="text-left px-6 py-4 text-base font-bold text-slate-900 uppercase tracking-widest">密码</th>
+                  <th className="text-left px-6 py-4 text-base font-bold text-slate-900 uppercase tracking-widest">注册时间</th>
+                  <th className="text-right px-6 py-4 text-base font-bold text-slate-900 uppercase tracking-widest">操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -134,27 +138,34 @@ export default function AdminUsersPage() {
                       <>
                         <td className="px-6 py-4">
                           <input
-                            className="h-9 px-3 rounded-lg border border-slate-200 text-sm w-full"
+                            className="h-11 px-3 rounded-lg border border-slate-200 text-lg w-full"
                             value={editForm.employeeId}
                             onChange={(e) => setEditForm({ ...editForm, employeeId: e.target.value })}
                           />
                         </td>
                         <td className="px-6 py-4">
                           <input
-                            className="h-9 px-3 rounded-lg border border-slate-200 text-sm w-full"
+                            className="h-11 px-3 rounded-lg border border-slate-200 text-lg w-full"
+                            value={editForm.name}
+                            onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                          />
+                        </td>
+                        <td className="px-6 py-4">
+                          <input
+                            className="h-11 px-3 rounded-lg border border-slate-200 text-lg w-full"
                             value={editForm.email}
                             onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                           />
                         </td>
                         <td className="px-6 py-4">
                           <input
-                            className="h-9 px-3 rounded-lg border border-slate-200 text-sm w-full placeholder:text-slate-300"
+                            className="h-9 px-3 rounded-lg border border-slate-200 text-lg w-full placeholder:text-slate-900"
                             placeholder="输入新密码"
                             value={editForm.password}
                             onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
                           />
                         </td>
-                        <td className="px-6 py-4 text-sm text-slate-400">
+                        <td className="px-6 py-4 text-lg text-slate-900">
                           {new Date(user.createdAt).toLocaleDateString()}
                         </td>
                         <td className="px-6 py-4 text-right">
@@ -168,7 +179,7 @@ export default function AdminUsersPage() {
                             </button>
                             <button
                               onClick={cancelEdit}
-                              className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors"
+                              className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-900 hover:bg-slate-100 transition-colors"
                               title="取消"
                             >
                               <X className="w-4 h-4" />
@@ -178,24 +189,25 @@ export default function AdminUsersPage() {
                       </>
                     ) : (
                       <>
-                        <td className="px-6 py-4 text-sm font-bold text-slate-800">{user.employeeId}</td>
-                        <td className="px-6 py-4 text-sm text-slate-600">{user.email}</td>
-                        <td className="px-6 py-4 text-sm text-slate-400">****</td>
-                        <td className="px-6 py-4 text-sm text-slate-400">
+                        <td className="px-6 py-4 text-lg font-bold text-slate-800">{user.employeeId}</td>
+                        <td className="px-6 py-4 text-lg text-slate-900">{user.name}</td>
+                        <td className="px-6 py-4 text-lg text-slate-900">{user.email}</td>
+                        <td className="px-6 py-4 text-lg text-slate-900 font-mono">{user.password}</td>
+                        <td className="px-6 py-4 text-lg text-slate-900">
                           {new Date(user.createdAt).toLocaleDateString()}
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => startEdit(user)}
-                              className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-primary hover:bg-primary/5 transition-colors"
+                              className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-900 hover:text-primary hover:bg-primary/5 transition-colors"
                               title="编辑"
                             >
                               <Pencil className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => deleteUser(user.id)}
-                              className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                              className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-900 hover:text-red-500 hover:bg-red-50 transition-colors"
                               title="删除"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -210,7 +222,7 @@ export default function AdminUsersPage() {
             </table>
 
             {users.length === 0 && (
-              <div className="py-20 text-center text-slate-300 text-sm">暂无注册用户</div>
+              <div className="py-20 text-center text-slate-900 text-xl">暂无注册用户</div>
             )}
           </div>
         </div>

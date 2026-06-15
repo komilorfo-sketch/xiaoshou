@@ -11,7 +11,7 @@ export default function LoginPage() {
             </svg>
           </div>
           <h1 className="text-3xl font-black tracking-tight text-slate-900 uppercase">
-            售前备战：首战即决战
+            销售备战：首战即决战
           </h1>
         </div>
 
@@ -23,8 +23,8 @@ export default function LoginPage() {
               </svg>
               接入备战状态
             </h2>
-            <p className="text-sm text-slate-400 font-medium">
-              请输入您的员工编号或邮箱以接入战术网络
+            <p className="text-sm text-slate-900 font-medium">
+              请输入您的用户名或邮箱
             </p>
           </div>
 
@@ -32,12 +32,12 @@ export default function LoginPage() {
             <div className="grid gap-6 py-2 px-8">
               <div className="grid gap-2">
                 <div className="relative">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-4 top-4 text-slate-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-4 top-4 text-slate-900">
                     <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" /><rect x="2" y="4" width="20" height="16" rx="2" />
                   </svg>
                   <input
                     name="email"
-                    placeholder="邮箱 / 员工编号"
+                    placeholder="邮箱 / 用户名"
                     type="text"
                     required
                     className="w-full pl-12 h-14 text-base bg-slate-50 border border-slate-200 focus:bg-white transition-all outline-none rounded-xl focus:ring-2 focus:ring-blue-500/20"
@@ -46,7 +46,7 @@ export default function LoginPage() {
               </div>
               <div className="grid gap-2">
                 <div className="relative">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-4 top-4 text-slate-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-4 top-4 text-slate-900">
                     <rect width="18" height="11" x="3" y="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
                   <input
@@ -69,7 +69,7 @@ export default function LoginPage() {
               <div className="text-center">
                 <Link
                   href="/register"
-                  className="text-sm text-slate-400 font-bold hover:text-slate-600 transition-colors uppercase tracking-wider underline underline-offset-4"
+                  className="text-sm text-slate-900 font-bold hover:text-slate-900 transition-colors uppercase tracking-wider underline underline-offset-4"
                 >
                   尚未获得权限？申请注册接口
                 </Link>

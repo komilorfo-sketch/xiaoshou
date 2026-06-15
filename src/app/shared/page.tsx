@@ -22,6 +22,19 @@ import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+function cleanReport(text: string | undefined | null): string {
+  if (!text) return "";
+  return text
+    .replace(/\[THOUGHTS:\s*[\s\S]*?\]/g, '')
+    .replace(/\[THOUGHTS\]/g, '')
+    .replace(/\[ITEM_CONFIRMED:\s*\d+\]/g, '')
+    .replace(/\[ITEM_QUALITY:[^\]]*\]/g, '')
+    .replace(/\[ITEM_PROGRESS:[^\]]*\]/g, '')
+    .replace(/\[SESSION_TITLE:[^\]]*\]/g, '')
+    .replace(/\[SESSION_COMPLETE\]/g, '')
+    .trim();
+}
+
 export default function SharedPage() {
   const router = useRouter();
   const [sessions, setSessions] = useState<any[]>([]);
@@ -91,16 +104,16 @@ export default function SharedPage() {
         {/* Left Sidebar - Shared Session List */}
         <div className="w-[30%] h-full bg-white border-r border-slate-100 flex flex-col shadow-sm relative z-20">
           <div className="p-6 border-b border-slate-50 bg-slate-50/30">
-            <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4">
+            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2 mb-4">
               <Users className="w-4 h-4" />
               共享备战库
             </h2>
             <div className="relative group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-900 group-focus-within:text-primary transition-colors" />
               <input
                 type="text"
                 placeholder="搜索任务或客户名称..."
-                className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-100/50 border-none text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 transition-all"
+                className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-100/50 border-none text-sm placeholder:text-slate-900 focus:ring-2 focus:ring-primary/20 transition-all"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -128,7 +141,7 @@ export default function SharedPage() {
                   </div>
                   <div className="flex items-center justify-between mt-1">
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
+                      <div className="flex items-center gap-1.5 text-xs font-medium text-slate-900">
                         <Clock className="w-3.5 h-3.5" />
                         <span>{new Date(session.updatedAt).toLocaleDateString()}</span>
                       </div>
@@ -148,7 +161,7 @@ export default function SharedPage() {
                       {session.userId === currentUserId && (
                         <button
                           onClick={(e) => handleUnshare(session.id, e)}
-                          className="flex items-center gap-1 text-xs font-medium text-slate-400 hover:text-red-500 transition-colors ml-auto"
+                          className="flex items-center gap-1 text-xs font-medium text-slate-900 hover:text-red-500 transition-colors ml-auto"
                           title="取消分享"
                         >
                           <X className="w-3.5 h-3.5" />
@@ -178,13 +191,13 @@ export default function SharedPage() {
                       <h1 className="text-3xl font-bold text-slate-900 tracking-tight leading-none group flex items-center gap-2">
                         {selectedSession.title}
                       </h1>
-                      <p className="text-sm text-slate-400 mt-1">分享人：{selectedSession.user?.name || '未知'}</p>
+                      <p className="text-sm text-slate-900 mt-1">分享人：{selectedSession.user?.name || '未知'}</p>
                     </div>
                   </div>
                   {selectedSession.userId === currentUserId && (
                     <button
                       onClick={() => handleUnshare(selectedSession.id, { stopPropagation: () => {} } as React.MouseEvent)}
-                      className="ml-auto flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
+                      className="ml-auto flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-900 hover:text-red-500 hover:bg-red-50 transition-all"
                     >
                       <X className="w-4 h-4" />
                       取消分享
@@ -194,15 +207,15 @@ export default function SharedPage() {
 
                 <Tabs defaultValue="plan" className="w-full">
                   <TabsList className="bg-slate-100 p-1 h-12 gap-1 rounded-xl w-fit">
-                    <TabsTrigger value="plan" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-500 data-[state=active]:text-primary">
+                    <TabsTrigger value="plan" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-900 data-[state=active]:text-primary">
                       <FileText className="w-4 h-4 mr-2" />
-                      售前备战报告
+                      销售备战报告
                     </TabsTrigger>
-                    <TabsTrigger value="speech" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-500 data-[state=active]:text-primary">
+                    <TabsTrigger value="speech" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-900 data-[state=active]:text-primary">
                       <MessageSquare className="w-4 h-4 mr-2" />
                       交流建议话术
                     </TabsTrigger>
-                    <TabsTrigger value="review" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-500 data-[state=active]:text-primary">
+                    <TabsTrigger value="review" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-900 data-[state=active]:text-primary">
                       <Zap className="w-4 h-4 mr-2" />
                       事后总结复盘
                     </TabsTrigger>
@@ -214,7 +227,7 @@ export default function SharedPage() {
                         <div className="bg-white rounded-[2rem] p-12 shadow-sm border border-slate-100">
                           <div className="prose prose-slate prose-lg max-w-none">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                              {selectedSession.fullReport || "暂无备战报告。"}
+                              {cleanReport(selectedSession.fullReport) || "暂无备战报告。"}
                             </ReactMarkdown>
                           </div>
                         </div>
@@ -224,7 +237,7 @@ export default function SharedPage() {
                         <div className="bg-white rounded-[2rem] p-12 shadow-sm border border-slate-100">
                           <div className="prose prose-slate prose-lg max-w-none">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                              {selectedSession.actionGuide || "暂无交流建议。"}
+                              {cleanReport(selectedSession.actionGuide) || "暂无交流建议。"}
                             </ReactMarkdown>
                           </div>
                         </div>
@@ -235,7 +248,7 @@ export default function SharedPage() {
                           <>
                             <section className="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100">
                               <div className="bg-slate-50/50 px-10 py-4 flex items-center justify-between border-b border-slate-100">
-                                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2">
                                   <AlertCircle className="w-4 h-4 text-primary" />
                                   战后对账与诊断书
                                 </h3>
@@ -253,7 +266,7 @@ export default function SharedPage() {
 
                             <section className="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100">
                               <div className="bg-slate-50/50 px-10 py-4 border-b border-slate-100">
-                                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2">
                                   <Zap className="w-4 h-4 text-amber-500" />
                                   立即行动与补救指令
                                 </h3>
@@ -268,8 +281,8 @@ export default function SharedPage() {
                         ) : (
                           <div className="bg-white rounded-[2rem] p-20 shadow-sm border border-slate-100 text-center">
                             <Zap className="w-12 h-12 text-slate-200 mx-auto mb-4" />
-                            <h3 className="text-lg font-bold text-slate-400">尚未执行复盘</h3>
-                            <p className="text-sm text-slate-300 mt-2 italic">该备战尚未进行战后复盘。</p>
+                            <h3 className="text-lg font-bold text-slate-900">尚未执行复盘</h3>
+                            <p className="text-sm text-slate-900 mt-2">该备战尚未进行战后复盘。</p>
                           </div>
                         )}
                       </TabsContent>
@@ -283,8 +296,8 @@ export default function SharedPage() {
               <div className="w-24 h-24 rounded-[2.5rem] bg-white shadow-xl flex items-center justify-center mb-8 border border-slate-50">
                 <Users className="w-10 h-10 text-slate-100" />
               </div>
-              <h3 className="text-lg font-bold text-slate-300 uppercase tracking-widest mb-3">共享备战库</h3>
-              <p className="text-[11px] font-medium text-slate-400 max-w-[280px] leading-relaxed italic">暂无共享备战。其他用户分享备战后，将在此展示。</p>
+              <h3 className="text-lg font-bold text-slate-900 uppercase tracking-widest mb-3">共享备战库</h3>
+              <p className="text-[11px] font-medium text-slate-900 max-w-[280px] leading-relaxed">暂无共享备战。其他用户分享备战后，将在此展示。</p>
             </div>
           )}
         </div>

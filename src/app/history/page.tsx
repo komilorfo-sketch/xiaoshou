@@ -26,6 +26,19 @@ import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+function cleanReport(text: string | undefined | null): string {
+  if (!text) return "";
+  return text
+    .replace(/\[THOUGHTS:\s*[\s\S]*?\]/g, '')
+    .replace(/\[THOUGHTS\]/g, '')
+    .replace(/\[ITEM_CONFIRMED:\s*\d+\]/g, '')
+    .replace(/\[ITEM_QUALITY:[^\]]*\]/g, '')
+    .replace(/\[ITEM_PROGRESS:[^\]]*\]/g, '')
+    .replace(/\[SESSION_TITLE:[^\]]*\]/g, '')
+    .replace(/\[SESSION_COMPLETE\]/g, '')
+    .trim();
+}
+
 export default function HistoryPage() {
   const router = useRouter();
   const [sessions, setSessions] = useState<any[]>([]);
@@ -85,16 +98,16 @@ export default function HistoryPage() {
         {/* Left Sidebar - Session List */}
         <div className="w-[30%] h-full bg-white border-r border-slate-100 flex flex-col shadow-sm relative z-20">
           <div className="p-6 border-b border-slate-50 bg-slate-50/30">
-            <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4">
+            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2 mb-4">
               <Clock className="w-4 h-4" />
               历史备战库
             </h2>
             <div className="relative group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-900 group-focus-within:text-primary transition-colors" />
               <input 
                 type="text" 
                 placeholder="搜索任务或客户名称..." 
-                className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-100/50 border-none text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 transition-all"
+                className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-100/50 border-none text-sm placeholder:text-slate-900 focus:ring-2 focus:ring-primary/20 transition-all"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -122,7 +135,7 @@ export default function HistoryPage() {
                   </div>
                   <div className="flex items-center justify-between mt-1">
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
+                      <div className="flex items-center gap-1.5 text-xs font-medium text-slate-900">
                         <Clock className="w-3.5 h-3.5" />
                         <span>{new Date(session.updatedAt).toLocaleDateString()}</span>
                       </div>
@@ -150,7 +163,7 @@ export default function HistoryPage() {
                           toast.success(newShared ? '已分享到共享库' : '已取消分享');
                         }}
                         className={`text-xs font-bold tracking-wide cursor-pointer hover:underline flex items-center gap-1 ${
-                          session.isShared ? 'text-primary' : 'text-slate-400 hover:text-primary'
+                          session.isShared ? 'text-primary' : 'text-slate-900 hover:text-primary'
                         }`}
                       >
                         <Share2 className="w-3 h-3" />
@@ -215,15 +228,15 @@ export default function HistoryPage() {
 
                 <Tabs defaultValue="plan" className="w-full">
                   <TabsList className="bg-slate-100 p-1 h-12 gap-1 rounded-xl w-fit">
-                    <TabsTrigger value="plan" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-500 data-[state=active]:text-primary">
+                    <TabsTrigger value="plan" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-900 data-[state=active]:text-primary">
                       <FileText className="w-4 h-4 mr-2" />
-                      售前备战报告
+                      销售备战报告
                     </TabsTrigger>
-                    <TabsTrigger value="speech" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-500 data-[state=active]:text-primary">
+                    <TabsTrigger value="speech" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-900 data-[state=active]:text-primary">
                       <MessageSquare className="w-4 h-4 mr-2" />
                       交流建议话术
                     </TabsTrigger>
-                    <TabsTrigger value="review" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-500 data-[state=active]:text-primary">
+                    <TabsTrigger value="review" className="rounded-lg px-8 font-bold text-base h-full data-[state=active]:bg-white data-[state=active]:shadow-sm text-slate-900 data-[state=active]:text-primary">
                       <Zap className="w-4 h-4 mr-2" />
                       事后总结复盘
                     </TabsTrigger>
@@ -235,7 +248,7 @@ export default function HistoryPage() {
                         <div className="bg-white rounded-[2rem] p-12 shadow-sm border border-slate-100">
                           <div className="prose prose-slate prose-lg max-w-none">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                              {selectedSession.fullReport || "暂无备战报告。"}
+                              {cleanReport(selectedSession.fullReport) || "暂无备战报告。"}
                             </ReactMarkdown>
                           </div>
                         </div>
@@ -245,7 +258,7 @@ export default function HistoryPage() {
                         <div className="bg-white rounded-[2rem] p-12 shadow-sm border border-slate-100">
                           <div className="prose prose-slate prose-lg max-w-none">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                              {selectedSession.actionGuide || "暂无交流建议。"}
+                              {cleanReport(selectedSession.actionGuide) || "暂无交流建议。"}
                             </ReactMarkdown>
                           </div>
                         </div>
@@ -256,7 +269,7 @@ export default function HistoryPage() {
                           <>
                             <section className="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100">
                               <div className="bg-slate-50/50 px-10 py-4 flex items-center justify-between border-b border-slate-100">
-                                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2">
                                   <AlertCircle className="w-4 h-4 text-primary" />
                                   战后对账与诊断书
                                 </h3>
@@ -274,7 +287,7 @@ export default function HistoryPage() {
 
                             <section className="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100">
                               <div className="bg-slate-50/50 px-10 py-4 border-b border-slate-100">
-                                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2">
                                   <Zap className="w-4 h-4 text-amber-500" />
                                   立即行动与补救指令
                                 </h3>
@@ -289,8 +302,8 @@ export default function HistoryPage() {
                         ) : (
                           <div className="bg-white rounded-[2rem] p-20 shadow-sm border border-slate-100 text-center">
                             <Zap className="w-12 h-12 text-slate-200 mx-auto mb-4" />
-                            <h3 className="text-lg font-bold text-slate-400">尚未执行复盘</h3>
-                            <p className="text-sm text-slate-300 mt-2 italic">请点击右上角“开始复盘”按钮，完成战后对账。</p>
+                            <h3 className="text-lg font-bold text-slate-900">尚未执行复盘</h3>
+                            <p className="text-sm text-slate-900 mt-2">请点击右上角“开始复盘”按钮，完成战后对账。</p>
                           </div>
                         )}
                       </TabsContent>
@@ -304,8 +317,8 @@ export default function HistoryPage() {
               <div className="w-24 h-24 rounded-[2.5rem] bg-white shadow-xl flex items-center justify-center mb-8 border border-slate-50">
                 <FileText className="w-10 h-10 text-slate-100" />
               </div>
-              <h3 className="text-lg font-bold text-slate-300 uppercase tracking-widest mb-3">推演资产库加载中</h3>
-              <p className="text-[11px] font-medium text-slate-400 max-w-[280px] leading-relaxed italic">请从左侧列表选择一次历史回溯。高分战例将沉淀为企业核心销售知识镜像。</p>
+              <h3 className="text-2xl font-bold text-slate-900 uppercase tracking-widest mb-3">推演资产库加载中</h3>
+              <p className="text-base font-medium text-slate-900 max-w-[380px] leading-relaxed">请从左侧列表选择一次历史回溯。高分战例将沉淀为企业核心销售知识镜像。</p>
             </div>
           )}
         </div>

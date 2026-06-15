@@ -114,12 +114,12 @@ export default function ReviewDraftsPage() {
               <Zap className="w-8 h-8 text-red-600" />
               复盘暂存
             </h1>
-            <p className="text-slate-400 text-lg font-medium mt-1 uppercase tracking-widest">
+            <p className="text-slate-900 text-lg font-medium mt-1 uppercase tracking-widest">
               待继续的复盘任务 · 深度复盘锁定胜势
             </p>
           </div>
           <div className="relative w-72">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-3 h-4 w-4 text-slate-900" />
             <Input 
               placeholder="搜索暂存任务..." 
               className="pl-10 h-10 bg-white border-slate-200 shadow-sm text-sm"
@@ -131,7 +131,7 @@ export default function ReviewDraftsPage() {
 
         <ScrollArea className="flex-1 pr-4">
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-32 gap-4 text-slate-400">
+            <div className="flex flex-col items-center justify-center py-32 gap-4 text-slate-900">
               <div className="w-10 h-10 border-4 border-slate-200 border-t-red-600 rounded-full animate-spin" />
               <span className="text-sm font-black uppercase tracking-widest">复盘数据检索中...</span>
             </div>
@@ -140,7 +140,7 @@ export default function ReviewDraftsPage() {
               <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center mb-2">
                 <Zap className="w-8 h-8 text-slate-200" />
               </div>
-              <p className="text-slate-400 text-lg font-bold italic uppercase tracking-widest">暂无复盘暂存</p>
+              <p className="text-slate-900 text-lg font-bold uppercase tracking-widest">暂无复盘暂存</p>
               <Link href="/history">
                 <Button className="bg-red-600 hover:bg-red-700 text-white font-black text-base px-8 rounded-xl shadow-lg shadow-red-100">
                   前往历史库开启复盘
@@ -160,7 +160,7 @@ export default function ReviewDraftsPage() {
                         <Badge variant="outline" className="text-xs font-black uppercase border-red-600 text-red-600 px-2">
                           复盘中 {completedCount}/6
                         </Badge>
-                        <div className="flex flex-col items-end text-xs text-slate-400 font-bold uppercase tracking-tighter">
+                        <div className="flex flex-col items-end text-xs text-slate-900 font-bold uppercase tracking-tighter">
                           <span className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
                             {new Date(session.createdAt).toLocaleDateString()}
@@ -184,7 +184,7 @@ export default function ReviewDraftsPage() {
                         <button 
                           type="button"
                           onClick={() => handleDelete(session.id)}
-                          className="w-12 h-10 border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-100 hover:bg-red-50 rounded-xl transition-all flex items-center justify-center bg-white"
+                          className="w-12 h-10 border border-slate-200 text-slate-900 hover:text-red-500 hover:border-red-100 hover:bg-red-50 rounded-xl transition-all flex items-center justify-center bg-white"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

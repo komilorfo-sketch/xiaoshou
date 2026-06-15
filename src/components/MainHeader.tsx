@@ -27,8 +27,8 @@ export function MainHeader({ userName, activePage, isAdmin }: MainHeaderProps) {
           <Target className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
         </div>
         <div className="flex flex-col">
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">
-            售前备战
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none">
+            销售备战
           </h1>
         </div>
       </div>
@@ -37,7 +37,7 @@ export function MainHeader({ userName, activePage, isAdmin }: MainHeaderProps) {
         <Button 
           variant="ghost" 
           size="sm" 
-          className="text-slate-600 hover:text-primary hover:bg-primary/5 font-bold text-sm gap-1.5 px-3 transition-all"
+          className="text-slate-900 hover:text-primary hover:bg-primary/5 font-bold text-base gap-1.5 px-3 transition-all"
           onClick={() => window.location.href = '/workspace'}
         >
           <PlusCircle className="w-4 h-4" />
@@ -45,28 +45,28 @@ export function MainHeader({ userName, activePage, isAdmin }: MainHeaderProps) {
         </Button>
         
         <Link href="/history">
-          <Button variant="ghost" size="sm" className="text-slate-600 hover:text-primary hover:bg-primary/5 font-bold text-sm gap-1.5 px-3 transition-all">
+          <Button variant="ghost" size="sm" className="text-slate-900 hover:text-primary hover:bg-primary/5 font-bold text-base gap-1.5 px-3 transition-all">
             <HistoryIcon className="w-4 h-4" />
             历史库
           </Button>
         </Link>
 
         <Link href="/shared">
-          <Button variant="ghost" size="sm" className={`font-bold text-sm gap-1.5 px-3 transition-all ${activePage === 'shared' ? 'text-primary bg-primary/5' : 'text-slate-600 hover:text-primary hover:bg-primary/5'}`}>
+          <Button variant="ghost" size="sm" className={`font-bold text-base gap-1.5 px-3 transition-all ${activePage === 'shared' ? 'text-primary bg-primary/5' : 'text-slate-900 hover:text-primary hover:bg-primary/5'}`}>
             <Share2 className="w-4 h-4" />
             共享库
           </Button>
         </Link>
 
         <Link href="/drafts">
-          <Button variant="ghost" size="sm" className="text-slate-600 hover:text-primary hover:bg-primary/5 font-bold text-sm gap-1.5 px-3 transition-all">
+          <Button variant="ghost" size="sm" className="text-slate-900 hover:text-primary hover:bg-primary/5 font-bold text-base gap-1.5 px-3 transition-all">
             <FileText className="w-4 h-4" />
             备战暂存库
           </Button>
         </Link>
 
         <Link href="/review-drafts">
-          <Button variant="ghost" size="sm" className={`font-bold text-sm gap-1.5 px-3 transition-all ${activePage === 'review-drafts' ? 'text-primary bg-primary/5' : 'text-slate-600 hover:text-primary hover:bg-primary/5'}`}>
+          <Button variant="ghost" size="sm" className={`font-bold text-base gap-1.5 px-3 transition-all ${activePage === 'review-drafts' ? 'text-primary bg-primary/5' : 'text-slate-900 hover:text-primary hover:bg-primary/5'}`}>
             <HistoryIcon className="w-4 h-4" />
             复盘暂存库
           </Button>
@@ -74,7 +74,7 @@ export function MainHeader({ userName, activePage, isAdmin }: MainHeaderProps) {
 
         {isAdmin && (
           <Link href="/admin/users">
-            <Button variant="ghost" size="sm" className={`font-bold text-sm gap-1.5 px-3 transition-all ${activePage === 'admin-users' ? 'text-primary bg-primary/5' : 'text-slate-600 hover:text-primary hover:bg-primary/5'}`}>
+            <Button variant="ghost" size="sm" className={`font-bold text-base gap-1.5 px-3 transition-all ${activePage === 'admin-users' ? 'text-primary bg-primary/5' : 'text-slate-900 hover:text-primary hover:bg-primary/5'}`}>
               <UserCog className="w-4 h-4" />
               用户管理
             </Button>
@@ -85,11 +85,11 @@ export function MainHeader({ userName, activePage, isAdmin }: MainHeaderProps) {
         
         <div className="flex items-center gap-3 pl-2">
           <div className="flex flex-col items-end">
-            <span className="text-sm font-bold text-slate-900 leading-none">{userName}</span>
+            <span className="text-base font-bold text-slate-900 leading-none">{userName}</span>
           </div>
           <button 
             onClick={handleLogout}
-            className="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+            className="w-9 h-9 flex items-center justify-center text-slate-900 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
             title="退出登录"
           >
             <LogOut className="w-4 h-4" />

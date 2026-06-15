@@ -15,7 +15,7 @@ export default function Home() {
         <div className="flex flex-col items-center gap-6">
           <div className="w-14 h-14 border-4 border-slate-100 border-t-primary rounded-full animate-spin shadow-sm" />
           <div className="flex flex-col items-center">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">系统加载中...</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-900">系统加载中...</span>
           </div>
         </div>
       </div>
@@ -117,30 +117,51 @@ function WorkspaceContent() {
     setStepStatuses(finalStatuses);
     setIsCompleted(true);
 
+    const cleanContent = (text: string) =>
+      text
+        .replace(/\[THOUGHTS:\s*[\s\S]*?\]/g, '')
+        .replace(/\[THOUGHTS\]/g, '')
+        .replace(/\[ITEM_CONFIRMED:\s*\d+\]/g, '')
+        .replace(/\[ITEM_QUALITY:[^\]]*\]/g, '')
+        .replace(/\[ITEM_PROGRESS:[^\]]*\]/g, '')
+        .replace(/\[SESSION_TITLE:[^\]]*\]/g, '')
+        .replace(/\[SESSION_COMPLETE\]/g, '')
+        .trim();
+
+    const extractSection = (content: string, marker: RegExp): { start: number; end: number } | null => {
+      const match = content.match(marker);
+      if (!match || match.index === undefined) return null;
+      // Skip past the heading line
+      const afterHeading = content.indexOf('\n', match.index);
+      return {
+        start: afterHeading === -1 ? match.index + match[0].length : afterHeading + 1,
+        end: match.index,
+      };
+    };
+
     const reportAMarker = /(?:\*\*|###)?\s*交付物\s*A\s*[：:]?\s*《?(?:售前)?全景备战报告》?/i;
     const reportBMarker = /(?:\*\*|###)?\s*交付物\s*B\s*[：:]?\s*《?现场交流建议及场景话术》?/i;
 
     let reportA = "";
     let reportB = "";
-    const aMatch = fullContent.match(reportAMarker);
-    const bMatch = fullContent.match(reportBMarker);
 
-    if (aMatch && bMatch) {
-      const aStart = aMatch.index!;
-      const bStart = bMatch.index!;
-      if (aStart < bStart) {
-        reportA = fullContent.substring(aStart, bStart).trim();
-        reportB = fullContent.substring(bStart).replace('[SESSION_COMPLETE]', '').trim();
+    const posA = extractSection(fullContent, reportAMarker);
+    const posB = extractSection(fullContent, reportBMarker);
+
+    if (posA && posB) {
+      if (posA.end < posB.end) {
+        reportA = cleanContent(fullContent.substring(posA.start, posB.end));
+        reportB = cleanContent(fullContent.substring(posB.start));
       } else {
-        reportB = fullContent.substring(bStart, aStart).trim();
-        reportA = fullContent.substring(aStart).replace('[SESSION_COMPLETE]', '').trim();
+        reportB = cleanContent(fullContent.substring(posB.start, posA.end));
+        reportA = cleanContent(fullContent.substring(posA.start));
       }
-    } else if (aMatch) {
-      reportA = fullContent.substring(aMatch.index!).replace('[SESSION_COMPLETE]', '').trim();
-    } else if (bMatch) {
-      reportB = fullContent.substring(bMatch.index!).replace('[SESSION_COMPLETE]', '').trim();
+    } else if (posA) {
+      reportA = cleanContent(fullContent.substring(posA.start));
+    } else if (posB) {
+      reportB = cleanContent(fullContent.substring(posB.start));
     } else {
-      reportA = fullContent.replace('[SESSION_COMPLETE]', '').trim();
+      reportA = cleanContent(fullContent);
     }
 
     if (sessionId) {

@@ -36,14 +36,14 @@ export function ReviewSummary({ diagnosticLetter, nextSteps, accuracyScore, adhe
             <TabsList className="bg-transparent h-14 gap-8">
               <TabsTrigger 
                 value="letter" 
-                className="h-full rounded-none border-b-2 border-transparent data-[state=active]:border-slate-900 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-base font-black uppercase tracking-widest text-slate-400 data-[state=active]:text-slate-900"
+                className="h-full rounded-none border-b-2 border-transparent data-[state=active]:border-slate-900 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-base font-black uppercase tracking-widest text-slate-900 data-[state=active]:text-slate-900"
               >
                 <FileText className="w-4 h-4 mr-2" />
                 战役复盘与落差诊断书
               </TabsTrigger>
               <TabsTrigger 
                 value="steps" 
-                className="h-full rounded-none border-b-2 border-transparent data-[state=active]:border-slate-900 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-base font-black tracking-widest text-slate-400 data-[state=active]:text-slate-900"
+                className="h-full rounded-none border-b-2 border-transparent data-[state=active]:border-slate-900 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-base font-black tracking-widest text-slate-900 data-[state=active]:text-slate-900"
               >
                 <Zap className="w-4 h-4 mr-2" />
                 战术补救/冲锋指令

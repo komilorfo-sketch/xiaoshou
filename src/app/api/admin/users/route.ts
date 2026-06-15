@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
 import prisma from '@/lib/db';
 
-type UserRecord = { id: string; email: string; employeeId: string; password: string; isAdmin: number; createdAt: string };
+type UserRecord = { id: string; name: string; email: string; employeeId: string; password: string; isAdmin: number; createdAt: string };
 
 export async function GET() {
   try {
     const users = await prisma.$queryRawUnsafe<UserRecord[]>(
-      `SELECT id, email, employeeId, isAdmin, createdAt FROM User ORDER BY createdAt DESC`
+      `SELECT id, name, email, employeeId, password, isAdmin, createdAt FROM User ORDER BY createdAt DESC`
     );
     const result = users.map(u => ({ ...u, isAdmin: Boolean(u.isAdmin) }));
     return NextResponse.json(result);
@@ -18,7 +17,7 @@ export async function GET() {
 
 export async function PATCH(req: Request) {
   try {
-    const { id, email, employeeId, password } = await req.json();
+    const { id, name, email, employeeId, password } = await req.json();
     if (!id) {
       return NextResponse.json({ message: '缺少用户ID' }, { status: 400 });
     }
@@ -26,13 +25,10 @@ export async function PATCH(req: Request) {
     const setClauses: string[] = [];
     const params: any[] = [];
 
+    if (name !== undefined) { setClauses.push('name = ?'); params.push(name); }
     if (email !== undefined) { setClauses.push('email = ?'); params.push(email); }
     if (employeeId !== undefined) { setClauses.push('employeeId = ?'); params.push(employeeId); }
-    if (password) {
-      const hashed = await bcrypt.hash(password, 10);
-      setClauses.push('password = ?');
-      params.push(hashed);
-    }
+    if (password) { setClauses.push('password = ?'); params.push(password); }
 
     if (setClauses.length === 0) {
       return NextResponse.json({ message: '没有要更新的字段' }, { status: 400 });
@@ -45,7 +41,7 @@ export async function PATCH(req: Request) {
     );
 
     const rows = await prisma.$queryRawUnsafe<UserRecord[]>(
-      `SELECT id, email, employeeId, isAdmin, createdAt FROM User WHERE id = ? LIMIT 1`,
+      `SELECT id, name, email, employeeId, password, isAdmin, createdAt FROM User WHERE id = ? LIMIT 1`,
       id
     );
     const user = rows[0];
@@ -63,6 +59,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ message: '缺少用户ID' }, { status: 400 });
     }
 
+    await prisma.$executeRawUnsafe(`DELETE FROM PreSalesSession WHERE userId = ?`, id);
     await prisma.$executeRawUnsafe(`DELETE FROM User WHERE id = ?`, id);
     return NextResponse.json({ message: '删除成功' });
   } catch (error: any) {

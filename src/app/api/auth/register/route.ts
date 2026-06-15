@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
 import prisma from '@/lib/db';
 
 export async function POST(req: Request) {
@@ -25,13 +24,10 @@ export async function POST(req: Request) {
 
     if (existingUser) {
       return NextResponse.json(
-        { message: '邮箱或工号已被注册' },
+        { message: '邮箱或用户名已被注册' },
         { status: 400 }
       );
     }
-
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user
     const user = await prisma.user.create({
@@ -39,7 +35,7 @@ export async function POST(req: Request) {
         name,
         email,
         employeeId,
-        password: hashedPassword,
+        password,
       },
     });
 

@@ -30,17 +30,19 @@ export async function POST(req: Request) {
       return response;
     }
 
-    type UserRecord = { id: string; name: string; email: string; employeeId: string; password: string; isAdmin: number };
-    const results = await prisma.$queryRawUnsafe<UserRecord[]>(
-      `SELECT id, name, email, employeeId, password, isAdmin FROM User WHERE email = ? OR employeeId = ? LIMIT 1`,
-      email, email
-    );
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: email },
+          { employeeId: email }
+        ]
+      }
+    });
 
-    if (!results || results.length === 0) {
+    if (!user) {
       return NextResponse.redirect(new URL('/login?error=notfound', req.url), 303);
     }
 
-    const user = results[0];
     if (password !== user.password) {
       return NextResponse.redirect(new URL('/login?error=wrongpassword', req.url), 303);
     }
@@ -49,7 +51,7 @@ export async function POST(req: Request) {
       id: user.id,
       name: user.name,
       email: user.email,
-      isAdmin: Boolean(user.isAdmin),
+      isAdmin: user.isAdmin,
     });
 
     const response = NextResponse.redirect(new URL('/workspace', req.url), 303);

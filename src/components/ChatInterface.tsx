@@ -22,6 +22,33 @@ interface ChatInterfaceProps {
   sessionId?: string;
 }
 
+// Remove [THOUGHTS: ...] blocks by counting bracket depth, so nested brackets
+// inside THOUGHTS content (e.g. expert tags) don't cause premature truncation.
+function removeThoughtsBlocks(text: string): string {
+  const TAG = '[THOUGHTS:';
+  let result = '';
+  let i = 0;
+
+  while (i < text.length) {
+    const tagIdx = text.indexOf(TAG, i);
+    if (tagIdx === -1) {
+      result += text.slice(i);
+      break;
+    }
+    result += text.slice(i, tagIdx);
+    let depth = 1;
+    let j = tagIdx + TAG.length;
+    while (j < text.length && depth > 0) {
+      if (text[j] === '[') depth++;
+      else if (text[j] === ']') depth--;
+      j++;
+    }
+    i = j;
+  }
+
+  return result;
+}
+
 export function ChatInterface({ onStepConfirmed, onStatusUpdate, onComplete, onSave, onTitleUpdate, initialMessages = [], sessionId }: ChatInterfaceProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -67,7 +94,7 @@ export function ChatInterface({ onStepConfirmed, onStatusUpdate, onComplete, onS
     onFinish: (message) => {
       // PREVENT DESYNC: Ignore anything inside [THOUGHTS] tags when parsing progress
       const rawContent = message.content;
-      const cleanContentForParsing = rawContent.replace(/\[THOUGHTS:\s*([\s\S]*?)\]/g, '').trim();
+      const cleanContentForParsing = removeThoughtsBlocks(rawContent).trim();
       
       // 1. Parse confirmed items FROM CLEAN CONTENT
       const confirmMatches = cleanContentForParsing.matchAll(/\[ITEM_CONFIRMED:\s*(\d+)\]/g);

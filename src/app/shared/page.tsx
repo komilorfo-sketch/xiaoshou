@@ -35,6 +35,49 @@ function cleanReport(text: string | undefined | null): string {
     .trim();
 }
 
+function extractFromChatHistory(chatHistoryJson: string | undefined | null): { reportA: string; reportB: string } {
+  if (!chatHistoryJson) return { reportA: '', reportB: '' };
+  try {
+    const messages = JSON.parse(chatHistoryJson);
+    if (!Array.isArray(messages) || messages.length === 0) return { reportA: '', reportB: '' };
+    let lastContent = '';
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i]?.role === 'assistant') {
+        lastContent = messages[i].content || '';
+        break;
+      }
+    }
+    if (!lastContent) return { reportA: '', reportB: '' };
+    const aHeading = /(?:\*\*|###)?\s*交付物\s*A\s*[：:]\s*《?.*?全景备战报告》?/i;
+    const bHeading = /(?:\*\*|###)?\s*交付物\s*B\s*[：:]\s*《?.*?现场交流建议及场景话术》?/i;
+    const aMatch = lastContent.match(aHeading);
+    const bMatch = lastContent.match(bHeading);
+    let reportA = '';
+    let reportB = '';
+    if (aMatch && aMatch.index !== undefined) {
+      const aStart = lastContent.indexOf('\n', aMatch.index) + 1;
+      const aEnd = bMatch && bMatch.index !== undefined ? bMatch.index : lastContent.length;
+      reportA = cleanReport(lastContent.substring(aStart, aEnd));
+    }
+    if (bMatch && bMatch.index !== undefined) {
+      const bStart = lastContent.indexOf('\n', bMatch.index) + 1;
+      reportB = cleanReport(lastContent.substring(bStart));
+    }
+    return { reportA, reportB };
+  } catch {
+    return { reportA: '', reportB: '' };
+  }
+}
+
+function getEffectiveReport(session: any, type: 'reportA' | 'reportB'): string {
+  const saved = type === 'reportA' ? session?.fullReport : session?.actionGuide;
+  if (saved) return cleanReport(saved);
+  const fb = extractFromChatHistory(session?.chatHistory);
+  const extracted = type === 'reportA' ? fb.reportA : fb.reportB;
+  if (extracted) return extracted;
+  return type === 'reportA' ? '暂无备战报告。' : '暂无交流建议。';
+}
+
 export default function SharedPage() {
   const router = useRouter();
   const [sessions, setSessions] = useState<any[]>([]);
@@ -227,7 +270,7 @@ export default function SharedPage() {
                         <div className="bg-white rounded-[2rem] p-12 shadow-sm border border-slate-100">
                           <div className="prose prose-slate prose-lg max-w-none">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                              {cleanReport(selectedSession.fullReport) || "暂无备战报告。"}
+                              {getEffectiveReport(selectedSession, 'reportA')}
                             </ReactMarkdown>
                           </div>
                         </div>
@@ -237,7 +280,7 @@ export default function SharedPage() {
                         <div className="bg-white rounded-[2rem] p-12 shadow-sm border border-slate-100">
                           <div className="prose prose-slate prose-lg max-w-none">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                              {cleanReport(selectedSession.actionGuide) || "暂无交流建议。"}
+                              {getEffectiveReport(selectedSession, 'reportB')}
                             </ReactMarkdown>
                           </div>
                         </div>

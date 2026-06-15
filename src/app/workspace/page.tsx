@@ -139,7 +139,7 @@ function WorkspaceContent() {
       };
     };
 
-    const reportAMarker = /(?:\*\*|###)?\s*交付物\s*A\s*[：:]?\s*《?(?:售前)?全景备战报告》?/i;
+    const reportAMarker = /(?:\*\*|###)?\s*交付物\s*A\s*[：:]?\s*《?.*全景备战报告》?/i;
     const reportBMarker = /(?:\*\*|###)?\s*交付物\s*B\s*[：:]?\s*《?现场交流建议及场景话术》?/i;
 
     let reportA = "";

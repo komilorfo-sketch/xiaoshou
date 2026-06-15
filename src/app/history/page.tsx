@@ -39,6 +39,64 @@ function cleanReport(text: string | undefined | null): string {
     .trim();
 }
 
+// Fallback: if fullReport/actionGuide was not saved (due to extraction bug in older sessions),
+// extract it from the last AI message in chatHistory.
+function extractFromChatHistory(chatHistoryJson: string | undefined | null): { reportA: string; reportB: string } {
+  if (!chatHistoryJson) return { reportA: '', reportB: '' };
+  try {
+    const messages = JSON.parse(chatHistoryJson);
+    if (!Array.isArray(messages) || messages.length === 0) return { reportA: '', reportB: '' };
+
+    // Find the last assistant message (which contains both deliverables)
+    let lastContent = '';
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i]?.role === 'assistant') {
+        lastContent = messages[i].content || '';
+        break;
+      }
+    }
+    if (!lastContent) return { reportA: '', reportB: '' };
+
+    // Match report A heading and extract content between it and report B heading
+    // The heading can have various prefixes like "电气成套售前", "售前", or none
+    const aHeading = /(?:\*\*|###)?\s*交付物\s*A\s*[：:]\s*《?.*?全景备战报告》?/i;
+    const bHeading = /(?:\*\*|###)?\s*交付物\s*B\s*[：:]\s*《?.*?现场交流建议及场景话术》?/i;
+
+    const aMatch = lastContent.match(aHeading);
+    const bMatch = lastContent.match(bHeading);
+
+    let reportA = '';
+    let reportB = '';
+
+    if (aMatch && aMatch.index !== undefined) {
+      const aStart = lastContent.indexOf('\n', aMatch.index) + 1;
+      const aEnd = bMatch && bMatch.index !== undefined ? bMatch.index : lastContent.length;
+      reportA = cleanReport(lastContent.substring(aStart, aEnd));
+    }
+
+    if (bMatch && bMatch.index !== undefined) {
+      const bStart = lastContent.indexOf('\n', bMatch.index) + 1;
+      reportB = cleanReport(lastContent.substring(bStart));
+    }
+
+    return { reportA, reportB };
+  } catch {
+    return { reportA: '', reportB: '' };
+  }
+}
+
+// Return the report content, falling back to chatHistory extraction if the saved field is empty.
+function getEffectiveReport(session: any, type: 'reportA' | 'reportB'): string {
+  const saved = type === 'reportA' ? session?.fullReport : session?.actionGuide;
+  if (saved) return cleanReport(saved);
+
+  const fb = extractFromChatHistory(session?.chatHistory);
+  const extracted = type === 'reportA' ? fb.reportA : fb.reportB;
+  if (extracted) return extracted;
+
+  return type === 'reportA' ? '暂无备战报告。' : '暂无交流建议。';
+}
+
 export default function HistoryPage() {
   const router = useRouter();
   const [sessions, setSessions] = useState<any[]>([]);
@@ -85,7 +143,7 @@ export default function HistoryPage() {
     setTimeout(() => setCopiedType(null), 2000);
   };
 
-  const filteredSessions = sessions.filter(s => 
+  const filteredSessions = sessions.filter(s =>
     s.isCompleted && // HARD FILTER: Only show completed tasks in history library
     s.title?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -214,8 +272,8 @@ export default function HistoryPage() {
 
                   <div className="flex items-center gap-3 ml-auto shrink-0">
                     {!selectedSession.isReviewed && (
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         className="rounded-xl font-bold text-sm h-10 px-8 bg-[#0066ff] hover:bg-blue-700 text-white shadow-lg shadow-blue-100 gap-2"
                         onClick={() => router.push(`/review/${selectedSession.id}`)}
                       >
@@ -248,7 +306,7 @@ export default function HistoryPage() {
                         <div className="bg-white rounded-[2rem] p-12 shadow-sm border border-slate-100">
                           <div className="prose prose-slate prose-lg max-w-none">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                              {cleanReport(selectedSession.fullReport) || "暂无备战报告。"}
+                              {getEffectiveReport(selectedSession, 'reportA')}
                             </ReactMarkdown>
                           </div>
                         </div>
@@ -258,7 +316,7 @@ export default function HistoryPage() {
                         <div className="bg-white rounded-[2rem] p-12 shadow-sm border border-slate-100">
                           <div className="prose prose-slate prose-lg max-w-none">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                              {cleanReport(selectedSession.actionGuide) || "暂无交流建议。"}
+                              {getEffectiveReport(selectedSession, 'reportB')}
                             </ReactMarkdown>
                           </div>
                         </div>

@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const password = formData.get('password') as string;
 
     if (!email || !password) {
-      return NextResponse.redirect(new URL('/login?error=missing', req.url));
+      return NextResponse.redirect(new URL('/login?error=missing', req.url), 303);
     }
 
     type UserRecord = { id: string; name: string; email: string; employeeId: string; password: string; isAdmin: number };
@@ -18,12 +18,12 @@ export async function POST(req: Request) {
     );
 
     if (!results || results.length === 0) {
-      return NextResponse.redirect(new URL('/login?error=notfound', req.url));
+      return NextResponse.redirect(new URL('/login?error=notfound', req.url), 303);
     }
 
     const user = results[0];
     if (password !== user.password) {
-      return NextResponse.redirect(new URL('/login?error=wrongpassword', req.url));
+      return NextResponse.redirect(new URL('/login?error=wrongpassword', req.url), 303);
     }
 
     const userData = JSON.stringify({
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
       isAdmin: Boolean(user.isAdmin),
     });
 
-    const response = NextResponse.redirect(new URL('/workspace', req.url));
+    const response = NextResponse.redirect(new URL('/workspace', req.url), 303);
     response.cookies.set('user', userData, {
       httpOnly: false,
       secure: false,
@@ -45,6 +45,6 @@ export async function POST(req: Request) {
     return response;
   } catch (error: any) {
     console.error('Login form error:', error);
-    return NextResponse.redirect(new URL('/login?error=server', req.url));
+    return NextResponse.redirect(new URL('/login?error=server', req.url), 303);
   }
 }

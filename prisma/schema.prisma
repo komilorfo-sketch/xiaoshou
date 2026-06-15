@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  employeeId    String    @unique
+  name          String
+  password      String
+  isAdmin       Boolean  @default(false)
+  sessions      PreSalesSession[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model PreSalesSession {
+  id             String   @id @default(uuid())
+  title          String   @default("未命名备战任务")
+  
+  // Storage for the 7-node checklist status and history
+  checklistData  String   @default("{}") // SQLite doesn't support JSON type, using String
+  chatHistory    String   @default("[]") // Store all chat messages as JSON
+  
+  fullReport     String?  // Strategic report
+  actionGuide    String?  // Tactical scripts
+  
+  isCompleted    Boolean  @default(false)
+  currentStep    Int      @default(1)    // Track which step the user is on (1-7)
+  
+  // AAR (After-Action Review) Fields
+  isReviewed          Boolean  @default(false)
+  reviewChecklistData String   @default("{}") // 6-node review status
+  reviewChatHistory   String   @default("[]")
+  diagnosticLetter    String?  // Output A
+  nextStepInstructions String? // Output B
+  accuracyScore       Int?
+  adherenceScore      Int?
+  isShared            Boolean  @default(false)
+
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

@@ -1,6 +1,43 @@
-import Link from "next/link";
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
 
 export default function LoginPage() {
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    try {
+      const res = await fetch('/api/auth/login-form', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.redirected) {
+        window.location.href = res.url;
+        return;
+      }
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.message || '登录失败，请重试');
+        return;
+      }
+
+      window.location.href = '/workspace';
+    } catch {
+      setError('网络错误，请检查连接后重试');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-50 font-sans antialiased text-slate-900 border-t-4 border-slate-900">
       <div className="w-full max-w-[450px] px-4">
@@ -28,7 +65,15 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form action="/api/auth/login-form" method="POST">
+          {error && (
+            <div className="px-8 pb-2">
+              <p className="text-sm font-bold text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                {error}
+              </p>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
             <div className="grid gap-6 py-2 px-8">
               <div className="grid gap-2">
                 <div className="relative">
@@ -62,9 +107,10 @@ export default function LoginPage() {
             <div className="flex flex-col gap-6 pb-10 pt-8 px-8">
               <button
                 type="submit"
-                className="w-full h-14 text-lg bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl transition-all shadow-lg active:scale-[0.98]"
+                disabled={loading}
+                className="w-full h-14 text-lg bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white font-bold rounded-2xl transition-all shadow-lg active:scale-[0.98]"
               >
-                接入
+                {loading ? '验证中...' : '接入'}
               </button>
               <div className="text-center">
                 <Link

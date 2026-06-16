@@ -12,20 +12,21 @@ export async function POST(req: Request) {
       );
     }
 
-    type UserRecord = { id: string; name: string; email: string; employeeId: string; password: string; isAdmin: number; createdAt: string; updatedAt: string };
-    const results = await prisma.$queryRawUnsafe<UserRecord[]>(
-      `SELECT id, name, email, employeeId, password, isAdmin, createdAt, updatedAt FROM User WHERE email = ? OR employeeId = ? LIMIT 1`,
-      email, email
-    );
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: email },
+          { employeeId: email }
+        ]
+      }
+    });
 
-    if (!results || results.length === 0) {
+    if (!user) {
       return NextResponse.json(
         { message: '用户不存在' },
         { status: 401 }
       );
     }
-
-    const user = results[0];
 
     if (password !== user.password) {
       return NextResponse.json(
@@ -34,10 +35,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const isAdmin = Boolean(user.isAdmin);
     return NextResponse.json({
       message: '登录成功',
-      user: { id: user.id, name: user.name, email: user.email, isAdmin },
+      user: { id: user.id, name: user.name, email: user.email, isAdmin: user.isAdmin },
     }, { status: 200 });
   } catch (error: any) {
     console.error('Login error:', error);
